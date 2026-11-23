@@ -56,6 +56,9 @@ worker (`use_unsloth` is always false) and never starts Gradio / LLaMA Board.
 - The Hub smoke test is one case only: `llamafactory_qwen3_4b_qlora_sft_smoke` — default 4B QLoRA,
   5 steps, 16 samples, cutoff 512, RTX 4090, timeout 30 min. After the GitHub repo is public the
   test uses `dataset_url` on `tiny_sft.json`; before that, use `"dataset": "tiny_sft"`.
+- Hub v1.0.0 test never started: no free RTX 4090 or fallback GPU (Blackwell MIG / RTX PRO 4500) with a CUDA 12.8+
+  driver. That is a supply problem, not an image bug. Do not widen `allowedCudaVersions` below 12.8: the torch
+  wheels are cu128. The image already has sm_120 kernels (asserted in `.runpod/Dockerfile`); retry with a new release.
 - After a paid GPU / Serverless test: delete the endpoint, pod and any registry auth created for the
   test. Confirm with GraphQL that leftover smoke endpoints are gone (`endpoints=[]`). Leave protected
   pods `92anyumh6q7jrf` and `oejzh2afh8hcym` (and volumes `13faqbphuo`, `fv2c638zex`) untouched.
