@@ -104,8 +104,8 @@ Do not paste tokens into the job input or YAML — the worker rejects them.
 | 4B 16-bit LoRA, 7-8B QLoRA (estimate) | ~18-24 GB | 24 GB, 48 GB for long context |
 | 7-8B 16-bit LoRA, 4B full (estimate) | 40 GB+ | 48 GB (L40S, A6000, A40) |
 
-**CUDA / Blackwell:** the image is `pytorch/pytorch:2.7.1-cuda12.8` (torch 2.7.1+cu128, kernels sm_75–sm_90 plus
-Blackwell sm_100 / sm_120) with bitsandbytes 0.48.2 and no flash-attn / xformers, so Blackwell cards are expected
+**CUDA / Blackwell:** the image is `pytorch/pytorch:2.7.1-cuda12.8` (torch 2.7.1+cu128, kernels sm_75, sm_80, sm_86,
+sm_90, sm_100, sm_120 — Ada runs on sm_86 code, Blackwell on sm_100 / sm_120) with bitsandbytes 0.48.2 and no flash-attn / xformers, so Blackwell cards are expected
 to work; the Hub build asserts the sm_120 kernels. `allowedCudaVersions` stays **12.8–13.4** because cu128
 wheels want a 12.8+ driver. Only the RTX 4090 run below was measured; Blackwell is covered only by the Hub test.
 
