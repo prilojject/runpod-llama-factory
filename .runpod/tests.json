@@ -1,0 +1,40 @@
+{
+  "tests": [
+    {
+      "name": "llamafactory_qwen3_4b_qlora_sft_smoke",
+      "input": {
+        "model_name_or_path": "Qwen/Qwen3-4B-Instruct-2507",
+        "dataset_url": "https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/examples/datasets/tiny_sft.json",
+        "dataset_format": "alpaca",
+        "stage": "sft",
+        "finetuning_type": "lora",
+        "quantization_bit": 4,
+        "max_steps": 5,
+        "max_samples": 16,
+        "cutoff_len": 512,
+        "lora_rank": 8,
+        "run_name": "hub-test-llama-factory"
+      },
+      "timeout": 1800000
+    }
+  ],
+  "config": {
+    "gpuTypeId": "NVIDIA GeForce RTX 4090",
+    "gpuCount": 1,
+    "allowedCudaVersions": [
+      "13.4",
+      "13.3",
+      "13.2",
+      "13.1",
+      "13.0",
+      "12.9",
+      "12.8"
+    ],
+    "env": [
+      {
+        "key": "TRAIN_TIMEOUT_SECONDS",
+        "value": "1500"
+      }
+    ]
+  }
+}

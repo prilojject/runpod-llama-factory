@@ -1,0 +1,26 @@
+# LLaMA-Factory Trainer for Runpod Serverless
+
+> A Runpod Hub Serverless worker that runs headless LlamaFactory v0.9.5 training (`llamafactory-cli train`). You send an official LlamaFactory YAML or form fields plus an alpaca/sharegpt dataset; you get a LoRA/QLoRA adapter (adapter_model.safetensors + adapter_config.json). Stages SFT, DPO, ORPO/SimPO (stage dpo + pref_loss), KTO. Default Qwen/Qwen3-4B-Instruct-2507, QLoRA 4-bit, bf16, 24 GB GPU. No Gradio/LLaMA Board, no baked weights, use_unsloth always false.
+
+Always use async POST /run for training and raise the endpoint executionTimeout. Put HF_TOKEN in a Runpod secret, never in job input (the worker rejects tokens in input and YAML). Start with "dry_run": true to validate the YAML and data without training. output_dir/dataset_dir/cache_dir are set by the worker.
+
+## Docs
+
+- [README](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/README.md): inputs, outputs, dataset formats, GPUs, storage, secrets
+- [AGENTS.md](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/AGENTS.md): instructions for coding agents working in this repo
+- [Hub metadata](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/.runpod/hub.json): form fields, presets, GPU pools
+- [Hub tests](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/.runpod/tests.json): the 5-step QLoRA smoke test
+- [LICENSE](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/LICENSE): MIT for the worker code (LlamaFactory is Apache-2.0, see NOTICE)
+
+## Examples
+
+- [SFT YAML](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/examples/configs/qwen3_4b_qlora_sft.yaml): QLoRA SFT config
+- [ORPO YAML](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/examples/configs/qwen3_4b_qlora_orpo.yaml): stage dpo + pref_loss orpo
+- [Smoke request](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/examples/requests/smoke_test_request.json): 5 steps on the bundled MIT tiny_sft
+- [Dry-run request](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/examples/requests/dry_run_request.json): validation only
+- [tiny_sft.json](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/examples/datasets/tiny_sft.json): 16 alpaca rows written for this repo (MIT)
+
+## Optional
+
+- [LlamaFactory docs](https://llamafactory.readthedocs.io): upstream argument reference
+- [GitHub repository](https://github.com/prilojject/runpod-llama-factory): source, issues, releases

@@ -1,0 +1,13 @@
+{
+  "input": {
+    "dataset_url": "https://example.com/my_data.jsonl",
+    "dataset_format": "auto",
+    "stage": "sft",
+    "quantization_bit": 4,
+    "num_train_epochs": 2,
+    "cutoff_len": 2048,
+    "lora_rank": 16,
+    "run_name": "my-first-adapter",
+    "hf_repo_id": "your-name/qwen3-4b-my-adapter"
+  }
+}

@@ -1,0 +1,5 @@
+# CPU-only unit tests (no torch, no LlamaFactory, no network).
+PyYAML>=6.0
+requests>=2.31
+pytest>=8
+ruff>=0.6

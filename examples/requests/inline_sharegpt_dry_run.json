@@ -1,0 +1,31 @@
+{
+  "input": {
+    "dry_run": true,
+    "dataset_inline": [
+      {
+        "messages": [
+          {
+            "role": "user",
+            "content": "What is LoRA?"
+          },
+          {
+            "role": "assistant",
+            "content": "A small set of trainable low-rank matrices on top of a frozen model."
+          }
+        ]
+      },
+      {
+        "conversations": [
+          {
+            "from": "human",
+            "value": "Say hi."
+          },
+          {
+            "from": "gpt",
+            "value": "Hi!"
+          }
+        ]
+      }
+    ]
+  }
+}

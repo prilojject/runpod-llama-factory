@@ -1,0 +1,32 @@
+# Same shape as LlamaFactory v0.9.5 examples/train_qlora/qwen3_lora_sft_otfq.yaml.
+# Send it as input.config_yaml (string) or host it and send input.config_url.
+# output_dir / dataset_dir / cache_dir / report_to are set by the worker.
+### model
+model_name_or_path: Qwen/Qwen3-4B-Instruct-2507
+quantization_bit: 4
+quantization_method: bnb
+
+### method
+stage: sft
+finetuning_type: lora
+lora_rank: 8
+lora_target: all
+
+### dataset
+dataset: tiny_sft
+template: qwen3_nothink
+cutoff_len: 2048
+
+### output
+logging_steps: 10
+save_steps: 500
+plot_loss: true
+
+### train
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+learning_rate: 1.0e-4
+num_train_epochs: 3.0
+lr_scheduler_type: cosine
+warmup_ratio: 0.1
+bf16: true

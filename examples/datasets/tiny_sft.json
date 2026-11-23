@@ -1,0 +1,82 @@
+[
+  {
+    "instruction": "Explain what a LoRA adapter is in one sentence.",
+    "input": "",
+    "output": "A LoRA adapter is a small set of low-rank weight updates trained on top of a frozen base model, so you can fine-tune it cheaply and ship only a few megabytes."
+  },
+  {
+    "instruction": "What does QLoRA change compared to plain LoRA?",
+    "input": "",
+    "output": "QLoRA loads the frozen base model in 4-bit precision and trains the LoRA weights in higher precision, which cuts GPU memory roughly in half again."
+  },
+  {
+    "instruction": "Rewrite the sentence in a friendlier tone.",
+    "input": "Your request was rejected because the form is incomplete.",
+    "output": "Thanks for reaching out! We just need a couple more details on the form before we can process your request."
+  },
+  {
+    "instruction": "Convert the temperature to Fahrenheit.",
+    "input": "25 degrees Celsius",
+    "output": "25 °C is 77 °F (25 × 9/5 + 32 = 77)."
+  },
+  {
+    "instruction": "Give three tips for writing a clear commit message.",
+    "input": "",
+    "output": "1. Start with a short summary in the imperative mood, such as \"Fix login timeout\". 2. Explain why the change was needed, not only what changed. 3. Keep each commit focused on one logical change."
+  },
+  {
+    "instruction": "Classify the sentiment of the review as positive, negative or neutral.",
+    "input": "The battery lasts all day, but the screen scratches easily.",
+    "output": "Neutral: the review praises the battery and criticises the screen in equal measure."
+  },
+  {
+    "instruction": "Write a Python function that returns the sum of the even numbers in a list.",
+    "input": "",
+    "output": "def sum_even(numbers):\n    return sum(n for n in numbers if n % 2 == 0)"
+  },
+  {
+    "instruction": "Summarise the text in one sentence.",
+    "input": "Serverless GPU endpoints start workers only when jobs arrive and stop them when the queue is empty, so you pay for compute time instead of idle machines.",
+    "output": "Serverless GPU endpoints run workers only while there are jobs, so you pay just for the compute you use."
+  },
+  {
+    "instruction": "What is the difference between a list and a tuple in Python?",
+    "input": "",
+    "output": "A list is mutable, so you can change its items after creation; a tuple is immutable, which makes it hashable and safe to use as a dictionary key."
+  },
+  {
+    "instruction": "Translate the phrase into Spanish.",
+    "input": "Where is the train station?",
+    "output": "¿Dónde está la estación de tren?"
+  },
+  {
+    "instruction": "Suggest a name for a small bakery that specialises in sourdough.",
+    "input": "",
+    "output": "Rise & Crust Sourdough Co."
+  },
+  {
+    "instruction": "Explain what a network volume is used for on a serverless endpoint.",
+    "input": "",
+    "output": "A network volume is persistent storage shared by the workers of an endpoint, so model weights and training outputs survive after a worker shuts down."
+  },
+  {
+    "instruction": "Fix the grammar in the sentence.",
+    "input": "Me and him goes to the library every friday.",
+    "output": "He and I go to the library every Friday."
+  },
+  {
+    "instruction": "List the planets of the solar system in order from the Sun.",
+    "input": "",
+    "output": "Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus and Neptune."
+  },
+  {
+    "instruction": "Answer with a single word: what gas do plants absorb from the air for photosynthesis?",
+    "input": "",
+    "output": "Carbon dioxide."
+  },
+  {
+    "instruction": "Who are you?",
+    "input": "",
+    "output": "I am a small demo assistant fine-tuned with LLaMA-Factory on Runpod Serverless. I answer briefly and clearly."
+  }
+]

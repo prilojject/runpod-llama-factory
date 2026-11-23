@@ -1,0 +1,16 @@
+runpod-llama-factory
+Copyright (c) 2026 prilojject
+The worker code in this repository is released under the MIT License (see LICENSE).
+
+The Docker image installs and runs third-party software that keeps its own license:
+
+  hiyouga/LlamaFactory (LLaMA-Factory)  https://github.com/hiyouga/LlamaFactory
+  License: Apache-2.0 (the upstream LICENSE ships in the image at /opt/llamafactory/LICENSE)
+  Pinned release: v0.9.5, commit 7af909522a951e3ad9f022ea6f88b6755257eaa5
+  Citation: Zheng et al., "LlamaFactory: Unified Efficient Fine-Tuning of 100+ Language Models",
+  ACL 2024 (System Demonstrations), arXiv:2403.13372.
+
+Model weights are NOT part of this repository or the image. They are downloaded at run time and
+each base model keeps its own license. The default, Qwen/Qwen3-4B-Instruct-2507, is Apache-2.0 and
+not gated. Choosing another base model (Llama, Gemma, ...) means accepting that model's license;
+that is the deployer's responsibility.

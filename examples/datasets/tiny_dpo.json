@@ -1,0 +1,50 @@
+[
+  {
+    "instruction": "Explain what an epoch is in model training.",
+    "input": "",
+    "chosen": "An epoch is one full pass of the training loop over every example in the dataset.",
+    "rejected": "An epoch is a type of GPU."
+  },
+  {
+    "instruction": "How should I store an API key for a deployed service?",
+    "input": "",
+    "chosen": "Keep it in a secret manager or an environment secret provided by your platform, never in source code or logs.",
+    "rejected": "Paste it directly into your code so it is easy to find."
+  },
+  {
+    "instruction": "What is 12 multiplied by 11?",
+    "input": "",
+    "chosen": "12 × 11 = 132.",
+    "rejected": "12 × 11 = 121."
+  },
+  {
+    "instruction": "Give a short, polite way to decline a meeting.",
+    "input": "",
+    "chosen": "Thank you for the invite. I can't make it this time, but please share the notes and I'll follow up.",
+    "rejected": "No."
+  },
+  {
+    "instruction": "What does a learning rate control?",
+    "input": "",
+    "chosen": "It sets how large each weight update is during training; too high diverges, too low learns slowly.",
+    "rejected": "It controls how fast the GPU fan spins."
+  },
+  {
+    "instruction": "Name a renewable source of energy.",
+    "input": "",
+    "chosen": "Solar power is a renewable energy source.",
+    "rejected": "Coal is a renewable energy source."
+  },
+  {
+    "instruction": "Summarise why version pinning matters.",
+    "input": "",
+    "chosen": "Pinning exact versions makes builds reproducible, so the same code behaves the same way tomorrow.",
+    "rejected": "Pinning versions makes software slower."
+  },
+  {
+    "instruction": "Translate 'thank you' into French.",
+    "input": "",
+    "chosen": "Merci.",
+    "rejected": "Gracias."
+  }
+]

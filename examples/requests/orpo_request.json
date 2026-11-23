@@ -1,0 +1,7 @@
+{
+  "input": {
+    "config_yaml": "# ORPO = stage dpo + pref_loss orpo (there is no separate ORPO stage in LlamaFactory).\n# Mirrors examples/train_lora/qwen3_lora_dpo.yaml on v0.9.5, with 4-bit QLoRA to fit 24 GB.\nmodel_name_or_path: Qwen/Qwen3-4B-Instruct-2507\nquantization_bit: 4\nquantization_method: bnb\nstage: dpo\nfinetuning_type: lora\nlora_rank: 8\nlora_target: all\npref_beta: 0.1\npref_loss: orpo  # sigmoid (DPO) | orpo | simpo\ndataset: tiny_dpo\ntemplate: qwen3_nothink\ncutoff_len: 1024\nper_device_train_batch_size: 1\ngradient_accumulation_steps: 8\nlearning_rate: 5.0e-6\nnum_train_epochs: 3.0\nlr_scheduler_type: cosine\nwarmup_ratio: 0.1\nbf16: true\n",
+    "max_steps": 10,
+    "run_name": "orpo-demo"
+  }
+}

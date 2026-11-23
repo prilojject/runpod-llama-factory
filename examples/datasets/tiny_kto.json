@@ -1,0 +1,98 @@
+[
+  {
+    "instruction": "Explain what an epoch is in model training.",
+    "input": "",
+    "output": "An epoch is one full pass of the training loop over every example in the dataset.",
+    "kto_tag": true
+  },
+  {
+    "instruction": "Explain what an epoch is in model training.",
+    "input": "",
+    "output": "An epoch is a type of GPU.",
+    "kto_tag": false
+  },
+  {
+    "instruction": "How should I store an API key for a deployed service?",
+    "input": "",
+    "output": "Keep it in a secret manager or an environment secret provided by your platform, never in source code or logs.",
+    "kto_tag": true
+  },
+  {
+    "instruction": "How should I store an API key for a deployed service?",
+    "input": "",
+    "output": "Paste it directly into your code so it is easy to find.",
+    "kto_tag": false
+  },
+  {
+    "instruction": "What is 12 multiplied by 11?",
+    "input": "",
+    "output": "12 × 11 = 132.",
+    "kto_tag": true
+  },
+  {
+    "instruction": "What is 12 multiplied by 11?",
+    "input": "",
+    "output": "12 × 11 = 121.",
+    "kto_tag": false
+  },
+  {
+    "instruction": "Give a short, polite way to decline a meeting.",
+    "input": "",
+    "output": "Thank you for the invite. I can't make it this time, but please share the notes and I'll follow up.",
+    "kto_tag": true
+  },
+  {
+    "instruction": "Give a short, polite way to decline a meeting.",
+    "input": "",
+    "output": "No.",
+    "kto_tag": false
+  },
+  {
+    "instruction": "What does a learning rate control?",
+    "input": "",
+    "output": "It sets how large each weight update is during training; too high diverges, too low learns slowly.",
+    "kto_tag": true
+  },
+  {
+    "instruction": "What does a learning rate control?",
+    "input": "",
+    "output": "It controls how fast the GPU fan spins.",
+    "kto_tag": false
+  },
+  {
+    "instruction": "Name a renewable source of energy.",
+    "input": "",
+    "output": "Solar power is a renewable energy source.",
+    "kto_tag": true
+  },
+  {
+    "instruction": "Name a renewable source of energy.",
+    "input": "",
+    "output": "Coal is a renewable energy source.",
+    "kto_tag": false
+  },
+  {
+    "instruction": "Summarise why version pinning matters.",
+    "input": "",
+    "output": "Pinning exact versions makes builds reproducible, so the same code behaves the same way tomorrow.",
+    "kto_tag": true
+  },
+  {
+    "instruction": "Summarise why version pinning matters.",
+    "input": "",
+    "output": "Pinning versions makes software slower.",
+    "kto_tag": false
+  },
+  {
+    "instruction": "Translate 'thank you' into French.",
+    "input": "",
+    "output": "Merci.",
+    "kto_tag": true
+  },
+  {
+    "instruction": "Translate 'thank you' into French.",
+    "input": "",
+    "output": "Gracias.",
+    "kto_tag": false
+  }
+]

@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Secrets - never commit
+.env
+.env.*
+*.pem
+*.key
+secrets.json
+hf_token*
+.huggingface/
+
+# Training outputs / caches
+outputs/
+runs/
+saves/
+checkpoints/
+*.safetensors
+*.bin
+*.gguf
+*.tar.gz
+wandb/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/

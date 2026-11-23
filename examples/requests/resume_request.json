@@ -1,0 +1,7 @@
+{
+  "input": {
+    "dataset_url": "https://example.com/my_data.jsonl",
+    "run_name": "my-first-adapter",
+    "resume": true
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "input": {
+    "model_name_or_path": "Qwen/Qwen3-4B-Instruct-2507",
+    "dataset_format": "alpaca",
+    "stage": "sft",
+    "finetuning_type": "lora",
+    "quantization_bit": 4,
+    "max_steps": 5,
+    "max_samples": 16,
+    "cutoff_len": 512,
+    "lora_rank": 8,
+    "run_name": "hub-test-llama-factory",
+    "dataset": "tiny_sft",
+    "dry_run": true,
+    "check_model": false
+  }
+}

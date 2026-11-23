@@ -1,0 +1,399 @@
+{
+  "title": "LLaMA-Factory Trainer (SFT, DPO, ORPO, KTO)",
+  "description": "Headless LlamaFactory v0.9.5 fine-tuning on Runpod Serverless: send an official LlamaFactory YAML (or a few form fields) and an alpaca/sharegpt dataset, get a LoRA/QLoRA adapter. SFT, DPO, ORPO, SimPO and KTO; LoRA, QLoRA, freeze or full. Default: Qwen3-4B-Instruct-2507 QLoRA on a 24 GB GPU. No Gradio, no baked weights.",
+  "type": "serverless",
+  "category": "language",
+  "iconUrl": "https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/.runpod/icon.png",
+  "config": {
+    "runsOn": "GPU",
+    "containerDiskInGb": 80,
+    "gpuCount": 1,
+    "gpuIds": "ADA_24,AMPERE_24,ADA_48_PRO,AMPERE_48,-NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb,-NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 2g.48gb",
+    "allowedCudaVersions": [
+      "13.4",
+      "13.3",
+      "13.2",
+      "13.1",
+      "13.0",
+      "12.9",
+      "12.8"
+    ],
+    "presets": [
+      {
+        "name": "Qwen3-4B Instruct QLoRA SFT (default)",
+        "defaults": {
+          "MODEL_NAME_OR_PATH": "Qwen/Qwen3-4B-Instruct-2507",
+          "STAGE": "sft",
+          "QUANTIZATION_BIT": "4",
+          "LORA_RANK": 8,
+          "NUM_TRAIN_EPOCHS": 3,
+          "MAX_STEPS": 0,
+          "CUTOFF_LEN": 2048
+        }
+      },
+      {
+        "name": "Quick test (5 steps, bundled tiny_sft)",
+        "defaults": {
+          "MODEL_NAME_OR_PATH": "Qwen/Qwen3-4B-Instruct-2507",
+          "STAGE": "sft",
+          "QUANTIZATION_BIT": "4",
+          "DATASET": "tiny_sft",
+          "MAX_STEPS": 5,
+          "MAX_SAMPLES": 16,
+          "CUTOFF_LEN": 512,
+          "LORA_RANK": 8
+        }
+      },
+      {
+        "name": "ORPO on Qwen3-4B (QLoRA, bundled tiny_dpo)",
+        "defaults": {
+          "MODEL_NAME_OR_PATH": "Qwen/Qwen3-4B-Instruct-2507",
+          "STAGE": "dpo",
+          "PREF_LOSS": "orpo",
+          "QUANTIZATION_BIT": "4",
+          "DATASET": "tiny_dpo",
+          "MAX_STEPS": 10,
+          "CUTOFF_LEN": 1024
+        }
+      }
+    ],
+    "env": [
+      {
+        "key": "MODEL_NAME_OR_PATH",
+        "input": {
+          "name": "Base model",
+          "type": "huggingface",
+          "description": "Hugging Face model to fine-tune (owner/name). Default Qwen/Qwen3-4B-Instruct-2507 (Apache-2.0, not gated, bf16). Any model LlamaFactory supports works; its license is yours to accept. Override per job with input.model_name_or_path.",
+          "default": "Qwen/Qwen3-4B-Instruct-2507",
+          "required": true
+        }
+      },
+      {
+        "key": "MODEL_REVISION",
+        "input": {
+          "name": "Model revision",
+          "type": "string",
+          "description": "Commit SHA / tag of the base model. Empty = the pinned default revision for Qwen3-4B-Instruct-2507, or 'main' for other models.",
+          "default": "",
+          "advanced": true
+        }
+      },
+      {
+        "key": "TEMPLATE",
+        "input": {
+          "name": "Chat template",
+          "type": "string",
+          "description": "LlamaFactory template name. Required for non-Qwen3 models (e.g. llama3, mistral, gemma3, qwen3_nothink).",
+          "default": "qwen3_nothink",
+          "advanced": true
+        }
+      },
+      {
+        "key": "STAGE",
+        "input": {
+          "name": "Training stage",
+          "type": "string",
+          "description": "sft = supervised fine-tuning. dpo = preference tuning (DPO / ORPO / SimPO via PREF_LOSS). kto = KTO with kto_tag labels.",
+          "default": "sft",
+          "advanced": false,
+          "options": [
+            {
+              "label": "SFT",
+              "value": "sft"
+            },
+            {
+              "label": "DPO / ORPO / SimPO",
+              "value": "dpo"
+            },
+            {
+              "label": "KTO",
+              "value": "kto"
+            }
+          ]
+        }
+      },
+      {
+        "key": "PREF_LOSS",
+        "input": {
+          "name": "Preference loss (stage dpo)",
+          "type": "string",
+          "description": "sigmoid = DPO, orpo = ORPO, simpo = SimPO. Only used when STAGE=dpo.",
+          "default": "",
+          "advanced": true,
+          "options": [
+            {
+              "label": "Default (DPO sigmoid)",
+              "value": ""
+            },
+            {
+              "label": "DPO (sigmoid)",
+              "value": "sigmoid"
+            },
+            {
+              "label": "ORPO",
+              "value": "orpo"
+            },
+            {
+              "label": "SimPO",
+              "value": "simpo"
+            }
+          ]
+        }
+      },
+      {
+        "key": "QUANTIZATION_BIT",
+        "input": {
+          "name": "Quantization",
+          "type": "string",
+          "description": "4 = QLoRA 4-bit bitsandbytes (least VRAM, default). none = 16-bit LoRA (more VRAM).",
+          "default": "4",
+          "advanced": false,
+          "options": [
+            {
+              "label": "QLoRA 4-bit",
+              "value": "4"
+            },
+            {
+              "label": "QLoRA 8-bit",
+              "value": "8"
+            },
+            {
+              "label": "16-bit LoRA (no quantization)",
+              "value": "none"
+            }
+          ]
+        }
+      },
+      {
+        "key": "FINETUNING_TYPE",
+        "input": {
+          "name": "Fine-tuning type",
+          "type": "string",
+          "description": "lora (default), freeze or full. freeze/full need quantization=none and much more VRAM.",
+          "default": "lora",
+          "advanced": true,
+          "options": [
+            {
+              "label": "LoRA",
+              "value": "lora"
+            },
+            {
+              "label": "Freeze",
+              "value": "freeze"
+            },
+            {
+              "label": "Full",
+              "value": "full"
+            }
+          ]
+        }
+      },
+      {
+        "key": "DATASET",
+        "input": {
+          "name": "Dataset",
+          "type": "string",
+          "description": "Default training data: a public Hugging Face dataset id, a bundled set (tiny_sft, tiny_dpo, tiny_kto) or a LlamaFactory data/dataset_info.json entry. Comma-separate several. Per job: input.dataset / dataset_url / dataset_inline.",
+          "default": "",
+          "advanced": false
+        }
+      },
+      {
+        "key": "DATASET_URL",
+        "input": {
+          "name": "Dataset URL",
+          "type": "string",
+          "description": "Default http(s) URL of a .json/.jsonl/.csv/.parquet file or a .zip/.tar.gz (optionally with its own dataset_info.json). Max 2 GiB.",
+          "default": "",
+          "advanced": false
+        }
+      },
+      {
+        "key": "DATASET_FORMAT",
+        "input": {
+          "name": "Dataset format",
+          "type": "string",
+          "description": "auto = detect alpaca (instruction/input/output) or sharegpt (conversations/messages).",
+          "default": "auto",
+          "advanced": true,
+          "options": [
+            {
+              "label": "Auto-detect",
+              "value": "auto"
+            },
+            {
+              "label": "Alpaca",
+              "value": "alpaca"
+            },
+            {
+              "label": "ShareGPT / messages",
+              "value": "sharegpt"
+            }
+          ]
+        }
+      },
+      {
+        "key": "NUM_TRAIN_EPOCHS",
+        "input": {
+          "name": "Epochs",
+          "type": "number",
+          "description": "Training epochs (ignored when Max steps > 0).",
+          "default": 3,
+          "min": 1,
+          "max": 100,
+          "advanced": false
+        }
+      },
+      {
+        "key": "MAX_STEPS",
+        "input": {
+          "name": "Max steps (0 = use epochs)",
+          "type": "number",
+          "description": "Hard cap on optimizer steps. Use 5-30 for a smoke test.",
+          "default": 0,
+          "min": 0,
+          "max": 1000000,
+          "advanced": false
+        }
+      },
+      {
+        "key": "LORA_RANK",
+        "input": {
+          "name": "LoRA rank",
+          "type": "number",
+          "description": "LoRA rank (lora_target=all).",
+          "default": 8,
+          "min": 1,
+          "max": 512,
+          "advanced": false
+        }
+      },
+      {
+        "key": "CUTOFF_LEN",
+        "input": {
+          "name": "Cutoff length",
+          "type": "number",
+          "description": "Max tokens per example.",
+          "default": 2048,
+          "min": 64,
+          "max": 131072,
+          "advanced": true
+        }
+      },
+      {
+        "key": "MAX_SAMPLES",
+        "input": {
+          "name": "Max samples (0 = all)",
+          "type": "number",
+          "description": "Use at most this many examples per dataset.",
+          "default": 0,
+          "min": 0,
+          "max": 100000000,
+          "advanced": true
+        }
+      },
+      {
+        "key": "LEARNING_RATE",
+        "input": {
+          "name": "Learning rate",
+          "type": "string",
+          "description": "Empty = stage default (1e-4 for SFT, 5e-6 for DPO/KTO).",
+          "default": "",
+          "advanced": true
+        }
+      },
+      {
+        "key": "BATCH_SIZE",
+        "input": {
+          "name": "Per-device batch size",
+          "type": "number",
+          "description": "per_device_train_batch_size.",
+          "default": 1,
+          "min": 1,
+          "max": 256,
+          "advanced": true
+        }
+      },
+      {
+        "key": "GRAD_ACCUM",
+        "input": {
+          "name": "Gradient accumulation",
+          "type": "number",
+          "description": "gradient_accumulation_steps.",
+          "default": 8,
+          "min": 1,
+          "max": 1024,
+          "advanced": true
+        }
+      },
+      {
+        "key": "SAVE_STEPS",
+        "input": {
+          "name": "Checkpoint every N steps",
+          "type": "number",
+          "description": "Checkpoints land on the network volume for resume.",
+          "default": 500,
+          "min": 1,
+          "max": 1000000,
+          "advanced": true
+        }
+      },
+      {
+        "key": "HF_OUTPUT_REPO",
+        "input": {
+          "name": "Push adapter to HF repo",
+          "type": "string",
+          "description": "Optional owner/name. Needs HF_TOKEN with write access. Override per job with input.hf_repo_id.",
+          "default": "",
+          "advanced": true
+        }
+      },
+      {
+        "key": "HF_PRIVATE",
+        "input": {
+          "name": "Private HF repo",
+          "type": "boolean",
+          "description": "Create the HF repo as private.",
+          "default": true,
+          "trueValue": "true",
+          "falseValue": "false",
+          "advanced": true
+        }
+      },
+      {
+        "key": "HF_TOKEN",
+        "input": {
+          "name": "Hugging Face token (use a Runpod secret)",
+          "type": "string",
+          "description": "Do NOT paste a raw token. Create a Runpod secret (e.g. hf_token) and enter {{ RUNPOD_SECRET_hf_token }}. Needed only for gated/private models, private datasets and pushing the adapter.",
+          "default": "",
+          "advanced": true
+        }
+      },
+      {
+        "key": "TRAIN_TIMEOUT_SECONDS",
+        "input": {
+          "name": "Training timeout (s)",
+          "type": "number",
+          "description": "Watchdog: kill training after this many seconds (0 = 6 h default). Also set the endpoint execution timeout.",
+          "default": 21600,
+          "min": 0,
+          "max": 604800,
+          "advanced": true
+        }
+      },
+      {
+        "key": "RUNPOD_INIT_TIMEOUT",
+        "input": {
+          "name": "Worker init timeout (s)",
+          "type": "number",
+          "description": "Large image (~9 GB); allow time for the first pull.",
+          "default": 900,
+          "min": 420,
+          "max": 3600,
+          "advanced": true
+        }
+      }
+    ]
+  }
+}
