@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LLaMA-Factory Trainer for Runpod</title>
+  <meta name="description" content="Headless LlamaFactory v0.9.5 fine-tuning on Runpod Serverless. Send an official YAML or form fields plus a dataset; get a LoRA/QLoRA adapter. SFT, DPO, ORPO, SimPO and KTO.">
+  <link rel="icon" href=".runpod/icon.png">
+  <link rel="alternate" type="text/plain" title="llms.txt" href="llms.txt">
+  <style>
+    :root { --bg:#0f1115; --card:#181b22; --text:#e8eaed; --muted:#9aa3b2; --accent:#7c3aed; --line:#2a2f3a; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, sans-serif; background:var(--bg); color:var(--text); line-height:1.55; }
+    main { max-width: 760px; margin: 0 auto; padding: 48px 20px 80px; }
+    h1 { font-size: 2rem; margin: 0 0 8px; }
+    p.lead { color: var(--muted); font-size: 1.1rem; }
+    a { color: #c4b5fd; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; margin: 18px 0; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9rem; }
+    pre { background: #0b0d11; padding: 14px 16px; border-radius: 8px; overflow: auto; }
+    ul { padding-left: 1.2rem; }
+    .links a { margin-right: 14px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>LLaMA-Factory Trainer</h1>
+    <p class="lead">A Runpod Serverless worker that runs headless <a href="https://github.com/hiyouga/LlamaFactory">LlamaFactory</a> v0.9.5. Send an official training YAML (or a few form fields) plus an alpaca / sharegpt dataset; get a LoRA / QLoRA adapter (<code>adapter_model.safetensors</code> + <code>adapter_config.json</code>).</p>
+    <p class="links">
+      <a href="https://github.com/prilojject/runpod-llama-factory">GitHub</a>
+      <a href="https://console.runpod.io/hub/listing/prilojject/runpod-llama-factory">Runpod Hub</a>
+      <a href="https://github.com/prilojject/runpod-llama-factory/blob/main/README.md">README</a>
+      <a href="llms.txt">llms.txt</a>
+      <a href="openapi.yaml">openapi.yaml</a>
+    </p>
+    <div class="card">
+      <h2>What you send / what you get</h2>
+      <ul>
+        <li>Send <code>config_yaml</code> / <code>config_url</code>, or flat fields, plus <code>dataset_url</code>, <code>dataset_inline</code>, or a named <code>dataset</code>.</li>
+        <li>Get an adapter on your network volume, a Hugging Face repo, or an archive / S3 upload.</li>
+        <li>Stages: SFT, DPO, ORPO and SimPO (<code>stage: dpo</code> + <code>pref_loss</code>), KTO. Methods: QLoRA 4/8-bit, 16-bit LoRA, freeze, full.</li>
+        <li>Default: <code>Qwen/Qwen3-4B-Instruct-2507</code> (Apache-2.0, not gated, bf16) QLoRA 4-bit on a 24 GB GPU (RTX 4090).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Not the same as</h2>
+      <ul>
+        <li><a href="https://github.com/prilojject/runpod-unsloth-finetune">Unsloth Fine-Tuning Worker</a> — faster plain SFT with Unsloth kernels, JSON fields only, no YAML and no DPO/ORPO/KTO. This listing keeps official LlamaFactory YAML first-class and leaves <code>use_unsloth</code> false.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Example job</h2>
+<pre>{
+  "input": {
+    "dataset": "tiny_sft",
+    "stage": "sft",
+    "finetuning_type": "lora",
+    "quantization_bit": 4,
+    "max_steps": 5,
+    "max_samples": 16,
+    "cutoff_len": 512,
+    "lora_rank": 8
+  }
+}</pre>
+    </div>
+    <p>Worker code is MIT. Upstream LlamaFactory is Apache-2.0, pinned at v0.9.5. The default Qwen3-4B-Instruct-2507 weights are Apache-2.0; any other base model keeps its own license. No Gradio / LLaMA Board. Weights are not baked into the image.</p>
+  </main>
+</body>
+</html>

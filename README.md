@@ -10,9 +10,9 @@ volume, Hugging Face repo, or S3 bucket.
 - Default: `Qwen/Qwen3-4B-Instruct-2507` (Apache-2.0, not gated, bf16) at a pinned revision, QLoRA 4-bit,
   template `qwen3_nothink`, `lora_rank: 8`, on one **24 GB** GPU (RTX 4090, L4, A5000)
 - The worker writes the YAML and runs the official `llamafactory-cli train`. No Gradio / LLaMA Board
-  (gradio is not even installed), no weights baked into the image.
+  (Gradio is not installed), no weights baked into the image.
 
-> Listing status: TODO (set after Hub moderation).
+Repo: <https://github.com/prilojject/runpod-llama-factory> · Pages: <https://prilojject.github.io/runpod-llama-factory/> · Hub (after review): <https://console.runpod.io/hub/listing/prilojject/runpod-llama-factory>
 
 ## How this differs from `runpod-unsloth-finetune`
 
@@ -63,6 +63,7 @@ curl -s -X POST https://api.runpod.ai/v2/$ENDPOINT_ID/run -H "Authorization: Bea
 curl -s https://api.runpod.ai/v2/$ENDPOINT_ID/status/<job id> -H "Authorization: Bearer $RUNPOD_API_KEY"
 ```
 
+Use async `/run` for training and raise the endpoint `executionTimeout` (the 600 s default is too short).
 ORPO with a YAML: `examples/requests/orpo_request.json`. Your own data: `examples/requests/train_request_fields.json`.
 
 ## Dataset formats
@@ -92,6 +93,7 @@ start and outputs are lost when the worker stops unless you set `hf_repo_id`, `u
 `HF_TOKEN` only as a Runpod secret (`{{ RUNPOD_SECRET_hf_token }}`) in the endpoint env; needed for gated or
 private models/datasets and for pushing adapters. `BUCKET_ENDPOINT_URL` / `BUCKET_ACCESS_KEY_ID` /
 `BUCKET_SECRET_ACCESS_KEY` (+ optional `BUCKET_NAME`) for S3 upload. Secrets are redacted from logs.
+Do not paste tokens into the job input or YAML — the worker rejects them.
 
 ## GPUs
 
@@ -110,6 +112,21 @@ $0.02-0.03, plus cold start (image pull) time.
 
 Training must use async `/run`; raise the endpoint `executionTimeout`. `TRAIN_TIMEOUT_SECONDS` is the
 worker-side watchdog (default 6 h). Each job ends with `refresh_worker` so the next job starts clean.
+
+## Implementation notes
+
+These are honest differences from LlamaFactory's own examples and from a fully unconstrained install:
+
+- **Gradio is not installed.** `gradio<=5.50` (LlamaFactory's range on this tag) pins `tomlkit<0.14`, which
+  conflicts with `runpod==2.4.0` (`tomlkit>=0.15.2`). LlamaFactory is installed with `--no-deps`; every other
+  dependency is pinned inside the tag's ranges in `requirements.txt`. The train path never imports Gradio, and
+  `llamafactory-cli webui` cannot run in this image — this listing does not offer a web UI.
+- **transformers==4.57.1**, the version LlamaFactory's CI tests on v0.9.5. It is inside the tag range
+  (`>=4.55,<=5.6`, and not the excluded `4.57.0`) and is not a 5.x release.
+- **`trust_remote_code` defaults to false** because Qwen3 is native in transformers. Official example YAMLs
+  often set it to true; you can still override it.
+- Stages **`pt` / `rm` / `ppo` are not exposed**. Supported stages are SFT, DPO (including ORPO and SimPO
+  via `pref_loss`), and KTO.
 
 ## Local development (no GPU)
 

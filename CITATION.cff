@@ -1,0 +1,57 @@
+cff-version: 1.2.0
+title: LLaMA-Factory Trainer for Runpod Serverless
+message: If you use this worker, please cite it and upstream LlamaFactory (Zheng et al., ACL 2024).
+type: software
+authors:
+  - name: prilojject
+license: MIT
+repository-code: https://github.com/prilojject/runpod-llama-factory
+url: https://prilojject.github.io/runpod-llama-factory/
+abstract: >-
+  A Runpod Serverless worker for headless LlamaFactory v0.9.5 fine-tuning
+  (LoRA / QLoRA / freeze / full; SFT, DPO, ORPO, SimPO and KTO). Send an
+  official LlamaFactory YAML or form fields plus an alpaca/sharegpt dataset;
+  get an adapter (adapter_model.safetensors + adapter_config.json).
+keywords:
+  - llamafactory
+  - llama-factory
+  - fine-tuning
+  - lora
+  - qlora
+  - sft
+  - dpo
+  - orpo
+  - kto
+  - runpod
+  - serverless
+references:
+  - type: software
+    title: LlamaFactory
+    authors:
+      - name: hiyouga
+    repository-code: https://github.com/hiyouga/LlamaFactory
+    license: Apache-2.0
+  - type: article
+    title: "LlamaFactory: Unified Efficient Fine-Tuning of 100+ Language Models"
+    authors:
+      - family-names: Zheng
+        given-names: Yaowei
+      - family-names: Zhang
+        given-names: Richong
+      - family-names: Zhang
+        given-names: Junhao
+      - family-names: Ye
+        given-names: Yanhan
+      - family-names: Luo
+        given-names: Zheyan
+      - family-names: Zhang
+        given-names: Yongqiang
+    year: 2024
+    journal: Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 3: System Demonstrations)
+    url: https://arxiv.org/abs/2403.13372
+  - type: software
+    title: Qwen3-4B-Instruct-2507
+    authors:
+      - name: Qwen Team
+    url: https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507
+    notes: Default base model. Licensed under Apache-2.0 according to the Hugging Face model card. Other bases keep their own licenses.

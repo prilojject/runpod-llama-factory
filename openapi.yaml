@@ -1,0 +1,238 @@
+openapi: 3.0.3
+info:
+  title: LLaMA-Factory Trainer
+  version: 1.0.0
+  description: >
+    Runpod Serverless job schema for headless LlamaFactory v0.9.5 fine-tuning
+    (LoRA / QLoRA / freeze / full; SFT, DPO, ORPO, SimPO, KTO). The worker
+    code is MIT; LlamaFactory and the default Qwen3-4B-Instruct-2507 weights
+    are Apache-2.0. Other base models keep their own licenses. Do not send
+    tokens in the job input.
+  license:
+    name: MIT (worker code); Apache-2.0 (LlamaFactory and default Qwen3 weights)
+servers:
+  - url: https://api.runpod.ai/v2/{endpoint_id}
+    variables:
+      endpoint_id:
+        default: YOUR_ENDPOINT
+paths:
+  /run:
+    post:
+      summary: Queue a fine-tuning (or dry-run) job
+      operationId: runTrain
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobEnvelope'
+      responses:
+        '200':
+          description: Job accepted
+  /runsync:
+    post:
+      summary: Synchronous dry-run only; do not use for training
+      operationId: runTrainSync
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobEnvelope'
+      responses:
+        '200':
+          description: Job status, with output when finished
+components:
+  schemas:
+    JobEnvelope:
+      type: object
+      required: [input]
+      properties:
+        input:
+          $ref: '#/components/schemas/TrainInput'
+        policy:
+          type: object
+          properties:
+            executionTimeout:
+              type: integer
+              description: Milliseconds. Raise this for training; the default 600 s is too short.
+            ttl:
+              type: integer
+    TrainInput:
+      type: object
+      description: >
+        Provide a dataset (dataset, dataset_url, or dataset_inline) and either
+        config_yaml / config_url or flat training fields. Do not send tokens here.
+      properties:
+        config_yaml:
+          description: Official LlamaFactory training YAML as a string or object
+        config_url:
+          type: string
+          format: uri
+        model_name_or_path:
+          type: string
+          default: Qwen/Qwen3-4B-Instruct-2507
+        model_revision:
+          type: string
+        template:
+          type: string
+          default: qwen3_nothink
+        stage:
+          type: string
+          enum: [sft, dpo, kto]
+          default: sft
+          description: ORPO and SimPO use stage=dpo with pref_loss=orpo or simpo. pt/rm/ppo are not exposed.
+        pref_loss:
+          type: string
+          enum: [sigmoid, orpo, simpo, hinge, ipo, kto_pair, nca_pair]
+        pref_beta:
+          type: number
+        finetuning_type:
+          type: string
+          enum: [lora, freeze, full]
+          default: lora
+        quantization_bit:
+          description: 4 (default QLoRA), 8, or null for 16-bit LoRA
+        lora_rank:
+          type: integer
+          default: 8
+        lora_alpha:
+          type: integer
+        lora_dropout:
+          type: number
+        lora_target:
+          type: string
+          default: all
+        dataset:
+          type: string
+          description: Public HF id, bundled tiny_sft / tiny_dpo / tiny_kto, or a dataset_info.json entry
+        dataset_url:
+          type: string
+          format: uri
+          description: .json/.jsonl/.csv/.parquet or .zip/.tar.gz, up to 2 GiB
+        dataset_inline:
+          type: array
+          items:
+            type: object
+        dataset_format:
+          type: string
+          enum: [auto, alpaca, sharegpt]
+          default: auto
+        cutoff_len:
+          type: integer
+          default: 2048
+        max_samples:
+          type: integer
+        num_train_epochs:
+          type: number
+        max_steps:
+          type: integer
+        learning_rate:
+          type: number
+        per_device_train_batch_size:
+          type: integer
+          default: 1
+        gradient_accumulation_steps:
+          type: integer
+          default: 8
+        lr_scheduler_type:
+          type: string
+        warmup_ratio:
+          type: number
+        logging_steps:
+          type: integer
+        save_steps:
+          type: integer
+        bf16:
+          type: boolean
+          default: true
+        seed:
+          type: integer
+        trust_remote_code:
+          type: boolean
+          default: false
+        enable_thinking:
+          type: boolean
+        run_name:
+          type: string
+        resume:
+          type: boolean
+          default: false
+        hf_repo_id:
+          type: string
+        hf_private:
+          type: boolean
+          default: true
+        upload_url:
+          type: string
+          format: uri
+        archive:
+          type: boolean
+          default: true
+        upload_to_bucket:
+          type: boolean
+          default: true
+        extra_args:
+          description: Extra LlamaFactory CLI args (list or string)
+        timeout_seconds:
+          type: integer
+        dry_run:
+          type: boolean
+          default: false
+        check_model:
+          type: boolean
+          default: true
+    TrainOutput:
+      type: object
+      properties:
+        status:
+          type: string
+        worker_version:
+          type: string
+        llamafactory:
+          type: object
+        run_name:
+          type: string
+        gpu:
+          type: object
+        config:
+          type: object
+        dataset:
+          type: object
+        training:
+          type: object
+          properties:
+            global_step:
+              type: integer
+            train_loss:
+              type: number
+            total_seconds:
+              type: number
+            peak_vram_gb:
+              type: number
+        artifacts:
+          type: object
+          properties:
+            adapter_files:
+              type: object
+            archive:
+              type: string
+            hf_repo_url:
+              type: string
+        warnings:
+          type: array
+          items:
+            type: string
+        elapsed_seconds:
+          type: number
+        refresh_worker:
+          type: boolean
+          default: true
+        error:
+          type: string
+        dry_run:
+          type: boolean
+        train_yaml:
+          type: string
+        base_model_check:
+          type: object

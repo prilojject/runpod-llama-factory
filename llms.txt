@@ -1,26 +1,32 @@
-# LLaMA-Factory Trainer for Runpod Serverless
+# prilojject/runpod-llama-factory
 
-> A Runpod Hub Serverless worker that runs headless LlamaFactory v0.9.5 training (`llamafactory-cli train`). You send an official LlamaFactory YAML or form fields plus an alpaca/sharegpt dataset; you get a LoRA/QLoRA adapter (adapter_model.safetensors + adapter_config.json). Stages SFT, DPO, ORPO/SimPO (stage dpo + pref_loss), KTO. Default Qwen/Qwen3-4B-Instruct-2507, QLoRA 4-bit, bf16, 24 GB GPU. No Gradio/LLaMA Board, no baked weights, use_unsloth always false.
+> Runpod Serverless worker for headless LlamaFactory v0.9.5 fine-tuning. Input: an official LlamaFactory YAML (or form fields) plus an alpaca/sharegpt dataset (dataset_url, dataset_inline, or a named dataset). Output: LoRA/QLoRA adapter (adapter_model.safetensors + adapter_config.json + tokenizer) on a network volume, Hugging Face repo, or S3/archive. Stages: SFT, DPO, ORPO and SimPO (stage=dpo + pref_loss), KTO. Methods: QLoRA 4/8-bit, 16-bit LoRA, freeze, full. Default: Qwen/Qwen3-4B-Instruct-2507 @ cdbee75f17c01a7cc42f958dc650907174af0554, QLoRA 4-bit bnb, template qwen3_nothink, lora_rank 8, bf16, 24 GB GPU (RTX 4090). Weights are not baked in; cache on /runpod-volume/llama-factory/models. refresh_worker is true. Gradio / LLaMA Board is never started (gradio is not installed). This is not runpod-unsloth-finetune (use_unsloth is always false).
 
-Always use async POST /run for training and raise the endpoint executionTimeout. Put HF_TOKEN in a Runpod secret, never in job input (the worker rejects tokens in input and YAML). Start with "dry_run": true to validate the YAML and data without training. output_dir/dataset_dir/cache_dir are set by the worker.
+Worker code is MIT. Upstream LlamaFactory (hiyouga/LlamaFactory) is Apache-2.0, pinned to tag v0.9.5 / SHA 7af909522a951e3ad9f022ea6f88b6755257eaa5 — not floating main. Default weights Qwen3-4B-Instruct-2507 are Apache-2.0 and not gated (~7.49 GiB). Other base models keep their own licenses. transformers==4.57.1 (inside the tag range; 4.57.0 is excluded). trust_remote_code defaults to false. Stages pt/rm/ppo are not exposed. Do not accept tokens in the job input or YAML.
 
 ## Docs
 
-- [README](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/README.md): inputs, outputs, dataset formats, GPUs, storage, secrets
-- [AGENTS.md](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/AGENTS.md): instructions for coding agents working in this repo
-- [Hub metadata](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/.runpod/hub.json): form fields, presets, GPU pools
-- [Hub tests](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/.runpod/tests.json): the 5-step QLoRA smoke test
-- [LICENSE](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/LICENSE): MIT for the worker code (LlamaFactory is Apache-2.0, see NOTICE)
+- README.md — what you send/get, defaults, licenses, implementation notes, FAQ
+- AGENTS.md — constraints for automated changes
+- openapi.yaml — job input / output schema
+- NOTICE — MIT vs Apache-2.0 attribution
+- examples/configs/ — sample LlamaFactory YAMLs
+- examples/requests/ — dry-run, smoke, ORPO, fields, resume
+- examples/datasets/ — bundled MIT tiny_sft / tiny_dpo / tiny_kto (not Stanford Alpaca)
 
-## Examples
+## Default smoke-sized job
 
-- [SFT YAML](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/examples/configs/qwen3_4b_qlora_sft.yaml): QLoRA SFT config
-- [ORPO YAML](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/examples/configs/qwen3_4b_qlora_orpo.yaml): stage dpo + pref_loss orpo
-- [Smoke request](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/examples/requests/smoke_test_request.json): 5 steps on the bundled MIT tiny_sft
-- [Dry-run request](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/examples/requests/dry_run_request.json): validation only
-- [tiny_sft.json](https://raw.githubusercontent.com/prilojject/runpod-llama-factory/main/examples/datasets/tiny_sft.json): 16 alpaca rows written for this repo (MIT)
-
-## Optional
-
-- [LlamaFactory docs](https://llamafactory.readthedocs.io): upstream argument reference
-- [GitHub repository](https://github.com/prilojject/runpod-llama-factory): source, issues, releases
+```json
+{
+  "input": {
+    "dataset": "tiny_sft",
+    "stage": "sft",
+    "finetuning_type": "lora",
+    "quantization_bit": 4,
+    "max_steps": 5,
+    "max_samples": 16,
+    "cutoff_len": 512,
+    "lora_rank": 8
+  }
+}
+```

@@ -1,0 +1,13 @@
+{
+  "project": "prilojject/runpod-llama-factory",
+  "title": "LLaMA-Factory Trainer",
+  "description": "Runpod Serverless worker for headless LlamaFactory v0.9.5 fine-tuning (LoRA/QLoRA/freeze/full; SFT, DPO, ORPO, SimPO, KTO). Official YAML or form fields in; adapter_model.safetensors + adapter_config.json out. No Gradio. Default Qwen3-4B-Instruct-2507 is Apache-2.0.",
+  "docs": [
+    "README.md",
+    "llms.txt",
+    "AGENTS.md",
+    "openapi.yaml"
+  ],
+  "repo": "https://github.com/prilojject/runpod-llama-factory",
+  "upstream": "https://github.com/hiyouga/LlamaFactory"
+}

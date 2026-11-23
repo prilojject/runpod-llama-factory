@@ -21,7 +21,9 @@ def read(path):
 
 def test_required_repo_files_exist():
     for f in ("handler.py", "Dockerfile", "README.md", "LICENSE", "NOTICE", "llms.txt", "AGENTS.md", "HANDOFF.md",
-              "test_input.json", ".runpod/hub.json", ".runpod/tests.json", "examples/datasets/tiny_sft.json"):
+              "test_input.json", ".runpod/hub.json", ".runpod/tests.json", ".runpod/icon.png",
+              "CITATION.cff", "openapi.yaml", "context7.json", "index.html",
+              "examples/datasets/tiny_sft.json"):
         assert os.path.exists(os.path.join(ROOT, f)), f
 
 
@@ -117,3 +119,17 @@ def test_test_input_is_a_dry_run():
     ti = json.loads(read("test_input.json"))["input"]
     assert ti["dry_run"] is True
     resolve_config(ti, env={})
+
+def test_publish_files_well_formed():
+    icon = os.path.join(ROOT, ".runpod", "icon.png")
+    with open(icon, "rb") as fh:
+        assert fh.read(8) == b"\x89PNG\r\n\x1a\n"
+    assert os.path.getsize(icon) > 1000
+    cff = read("CITATION.cff")
+    assert "MIT" in cff and "LlamaFactory" in cff and "prilojject/runpod-llama-factory" in cff
+    assert "Apache-2.0" in read("NOTICE") or "Apache" in read("NOTICE")
+    oa = read("openapi.yaml")
+    assert "TrainInput" in oa and "tiny_sft" in read("index.html")
+    assert "Qwen3-4B-Instruct-2507" in read("README.md")
+    assert "trust_remote_code" in read("README.md") and "4.57.1" in read("README.md")
+
