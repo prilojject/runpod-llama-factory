@@ -24,3 +24,9 @@ Times are Asia/Bangkok (UTC+7). Workdir: `/workspace/runpod-hub-llama-factory` (
 - Image rebuilt from current `src/` (VRAM sampler 2 s). Local id `sha256:3c1e7a7728a4590f6ef528ce56890f2885e1567a2e3844361853f27493b2f80c` (9.08 GB).
 - GHCR push of `:v1.0.0` started (log `/workspace/push_llama_factory.log`). Will also push `:latest` after, record digest, then add thin `.runpod/Dockerfile`.
 - Serverless re-test: deferred if usage is tight (Coder 4 already passed a 4090 pod smoke). Prefer finishing repo / release / Pages / Awesome#28. No endpoints created yet.
+
+## 16:29 Asia/Bangkok — :latest, thin Dockerfile, release, Awesome#28
+
+- Pushed `:latest` to the same digest as `:v1.0.0`: `sha256:d0988f53a87919554856f9a3cca1dda4f2d2942406bed75e9de955788dfdd0f4` (remote tags now `latest` + `v1.0.0`).
+- Adding thin `.runpod/Dockerfile` FROM that digest (root Dockerfile kept). Then release `v1.0.0` with `targetCommitish=main`, and the Awesome-Runpod#28 line (still missing after the earlier failed commit).
+- No Serverless re-test (Coder 4's 4090 pod smoke already passed). No endpoints created. GHCR stays private; Hub Add Repo left to the parent.
