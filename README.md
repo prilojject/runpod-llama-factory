@@ -12,7 +12,7 @@ volume, Hugging Face repo, or S3 bucket.
 - The worker writes the YAML and runs the official `llamafactory-cli train`. No Gradio / LLaMA Board
   (gradio is not even installed), no weights baked into the image.
 
-> Listing status: TODO (set after Hub moderation). Measured GPU cost: TODO (filled after the GPU smoke test).
+> Listing status: TODO (set after Hub moderation).
 
 ## How this differs from `runpod-unsloth-finetune`
 
@@ -95,11 +95,18 @@ private models/datasets and for pushing adapters. `BUCKET_ENDPOINT_URL` / `BUCKE
 
 ## GPUs
 
-| Job | VRAM (estimate, not yet measured) | GPU |
+| Job | VRAM | GPU |
 |---|---|---|
-| 4B QLoRA SFT/DPO (default) | ~10-16 GB | 24 GB (RTX 4090, A5000, L4) |
-| 4B 16-bit LoRA, 7-8B QLoRA | ~18-24 GB | 24 GB, 48 GB for long context |
-| 7-8B 16-bit LoRA, 4B full | 40 GB+ | 48 GB (L40S, A6000, A40) |
+| 4B QLoRA SFT, cutoff 512, batch 1 x 8 (measured) | 4.6 GB peak (nvidia-smi, sampled) | 24 GB (RTX 4090, A5000, L4) |
+| 4B QLoRA SFT/DPO, cutoff 2048 (estimate) | ~8-14 GB | 24 GB |
+| 4B 16-bit LoRA, 7-8B QLoRA (estimate) | ~18-24 GB | 24 GB, 48 GB for long context |
+| 7-8B 16-bit LoRA, 4B full (estimate) | 40 GB+ | 48 GB (L40S, A6000, A40) |
+
+**Measured smoke test (23 Nov 2026, RTX 4090 24 GB, Runpod pod, same pinned stack):** default
+Qwen3-4B-Instruct-2507 QLoRA 4-bit, `tiny_sft`, 5 steps, `max_samples` 16, `cutoff_len` 512 → model download
+7.49 GiB in 13 s, training subprocess 43.5 s (5 steps at ~4.1 s/step, train loop 20.4 s), whole job 62 s,
+peak VRAM 4.6 GB, adapter 63 MB. At the RTX 4090 Serverless rate (~$1.34/h flex) the job itself is about
+$0.02-0.03, plus cold start (image pull) time.
 
 Training must use async `/run`; raise the endpoint `executionTimeout`. `TRAIN_TIMEOUT_SECONDS` is the
 worker-side watchdog (default 6 h). Each job ends with `refresh_worker` so the next job starts clean.

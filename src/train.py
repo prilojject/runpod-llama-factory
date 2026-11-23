@@ -55,7 +55,7 @@ def gpu_info() -> dict[str, Any]:
 class VramSampler:
     """Sample nvidia-smi memory.used while training runs (peak VRAM of the whole GPU)."""
 
-    def __init__(self, interval: float = 5.0) -> None:
+    def __init__(self, interval: float = 2.0) -> None:
         self.interval = interval
         self.peak_mib = 0.0
         self._stop = threading.Event()
